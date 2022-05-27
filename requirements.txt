@@ -13,3 +13,4 @@ pytest-watch==4.2.0
 sqlparse==0.4.2
 tomli==2.0.1
 watchdog==2.1.8
+djangorestframework==3.13.1
