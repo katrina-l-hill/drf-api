@@ -17,22 +17,20 @@ class FoodTests(APITestCase):
         testuser1.save()
 
         test_food = Food.objects.create(
-            name="rake",
+            name="Twix",
             purchaser=testuser1,
-            description="Better for collecting leaves than a shovel.",
+            description="Left or right?",
         )
         test_food.save()
 
     def test_food_model(self):
         food = Food.objects.get(id=1)
-        actual_owner = str(food.owner)
+        actual_purchaser = str(food.purchaser)
         actual_name = str(food.name)
         actual_description = str(food.description)
-        self.assertEqual(actual_owner, "testuser1")
-        self.assertEqual(actual_name, "rake")
-        self.assertEqual(
-            actual_description, "Better for collecting leaves than a shovel."
-        )
+        self.assertEqual(actual_purchaser, "testuser1")
+        self.assertEqual(actual_name, "Twix")
+        self.assertEqual(actual_description, "Left or right?")
 
     def test_get_food_list(self):
         url = reverse("food_list")
@@ -40,34 +38,34 @@ class FoodTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         food = response.data
         self.assertEqual(len(food), 1)
-        self.assertEqual(food[0]["name"], "rake")
+        self.assertEqual(food[0]["name"], "Twix")
 
     def test_get_food_by_id(self):
         url = reverse("food_detail", args=(1,))
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         food = response.data
-        self.assertEqual(food["name"], "rake")
+        self.assertEqual(food["name"], "Twix")
 
     def test_create_food(self):
         url = reverse("food_list")
         data = {
-            "owner": 1,
-            "purchaser": "spoon",
-            "description": "good for cereal and soup",
+            "purchaser": 1,
+            "name": "Kit Kat",
+            "description": "Gotta eat it layer by layer",
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         food = Food.objects.all()
         self.assertEqual(len(food), 2)
-        self.assertEqual(Food.objects.get(id=2).name, "spoon")
+        self.assertEqual(Food.objects.get(id=2).name, "Kit Kat")
 
     def test_update_food(self):
         url = reverse("food_detail", args=(1,))
         data = {
             "purchaser": 1,
-            "name": "rake",
-            "description": "pole with a crossbar toothed like a comb.",
+            "name": "Gyoza",
+            "description": "Pan fried is the best.",
         }
         response = self.client.put(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -76,7 +74,7 @@ class FoodTests(APITestCase):
         self.assertEqual(food.purchaser.id, data["purchaser"])
         self.assertEqual(food.description, data["description"])
 
-    def test_delete_thing(self):
+    def test_delete_food(self):
         url = reverse("food_detail", args=(1,))
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
